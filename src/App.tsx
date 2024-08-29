@@ -1,24 +1,61 @@
-import { useState } from "react";
+import {
+  ChangeEventHandler,
+  MouseEventHandler,
+  useReducer,
+  useState,
+} from "react";
 import "./App.css";
-import { Task } from "./utils/types";
+import { State } from "./utils/types";
 import TaskList from "./components/TaskList";
+import reducer from "./utils/reducer";
 
 function App() {
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [state, dispatch] = useReducer(reducer, initialState);
+  //const [tasks, setTasks] = useState<Task[]>([]);
   const [newTask, setNewTask] = useState<string>("");
 
   const handleSubmitTask = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (newTask.trim() === "") return;
-    setTasks([
-      ...tasks,
-      { id: tasks.length + 1, name: newTask, completed: false },
-    ]);
+    dispatch({
+      type: "added",
+      payload: {
+        id: state.nextId + 1,
+        name: newTask.trim(),
+      },
+    });
     setNewTask("");
   };
 
+  const handleChangeTask: ChangeEventHandler<HTMLInputElement> = (event) => {
+    const id = parseInt(event.currentTarget.getAttribute("data-id") || "", 10);
+    const newTask = event.target.value;
+    const completed = event.target.checked;
+
+    dispatch({
+      type: "changed",
+      payload: {
+        id,
+        name: newTask,
+        completed,
+      },
+    });
+  };
+
+  const handleDeleteTask: MouseEventHandler<HTMLButtonElement> = (event) => {
+    const id = parseInt(event.currentTarget.getAttribute("data-id") ?? "", 10);
+    dispatch({
+      type: "deleted",
+      payload: {
+        id,
+        name: "",
+        completed: true,
+      },
+    });
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
+    <div className="flex flex-row items-start justify-center h-screen">
       <form onSubmit={handleSubmitTask}>
         <input
           type="text"
@@ -28,10 +65,20 @@ function App() {
         <button type="submit">Ajouter une tache</button>
       </form>
       <div>
-        <TaskList tasks={tasks} />
+        <TaskList
+          tasks={state.tasks}
+          onChangeTask={handleChangeTask}
+          onDeleteTask={handleDeleteTask}
+        />
       </div>
     </div>
   );
 }
+
+const initialState: State = {
+  tasks: [],
+  nextId: 0,
+  newTask: "",
+};
 
 export default App;
