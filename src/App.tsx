@@ -11,31 +11,38 @@ import reducer from "./utils/reducer";
 
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
-  //const [tasks, setTasks] = useState<Task[]>([]);
-  const [newTask, setNewTask] = useState<string>("");
   const [isChecked, setIsChecked] = useState<boolean>(false);
 
   const handleSubmitTask = (event: React.FormEvent<HTMLFormElement>) => {
+    console.log("submitTask");
     event.preventDefault();
-    if (newTask.trim() === "") return;
+    if (state.newTask?.trim() === "") return;
     dispatch({
       type: "added",
-      payload: {
-        id: state.nextId + 1,
-        name: newTask.trim(),
-      },
+      payload: { task: { id: state.nextId + 1, name: state.newTask?.trim()? state.newTask : '' } },
     });
-    setNewTask("");
   };
 
-  const onCheckTask: ChangeEventHandler = (event) => {
+  const handleInsertText = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(event.target.value);
+    dispatch({
+      type: "insert",
+      payload: {
+        taskName: event.target.value,
+      },
+    });
+  };
+
+  const onCheckTask: ChangeEventHandler<HTMLInputElement> = (event) => {
     const id = parseInt(event.currentTarget.getAttribute("data-id") || "", 10);
     dispatch({
       type: "completed",
       payload: {
-        id,
-        name: "",
-        completed: isChecked,
+        task: {
+          id,
+          name: event.target.value,
+          completed: event.target.checked,
+        },
       },
     });
     setIsChecked(!isChecked);
@@ -49,9 +56,11 @@ function App() {
     dispatch({
       type: "changed",
       payload: {
-        id,
-        name: newTask,
-        completed,
+        task: {
+          id,
+          name: newTask,
+          completed,
+        },
       },
     });
   };
@@ -61,9 +70,11 @@ function App() {
     dispatch({
       type: "deleted",
       payload: {
-        id,
-        name: "",
-        completed: true,
+        task: {
+          id,
+          name: "",
+          completed: true,
+        },
       },
     });
   };
@@ -71,11 +82,7 @@ function App() {
   return (
     <div className="flex flex-row items-start justify-center h-screen">
       <form onSubmit={handleSubmitTask}>
-        <input
-          type="text"
-          value={newTask}
-          onChange={(e) => setNewTask(e.target.value)}
-        />
+        <input type="text" value={state.newTask} onChange={handleInsertText} />
         <button type="submit">Ajouter une tache</button>
       </form>
       <div>

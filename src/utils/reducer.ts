@@ -1,6 +1,12 @@
 import { ReducerAction, State } from "./types";
 
 function reducer(state: State, action: ReducerAction): State {
+  if(!(action.payload.task ?? action.payload.taskName)){
+    return {
+      ...state
+    }
+  }
+  console.log(action.payload.task?.name)
   switch (action.type) {
     case "added": {
       return {
@@ -8,44 +14,47 @@ function reducer(state: State, action: ReducerAction): State {
           ...state["tasks"],
           {
             id: state.nextId,
-            name: action.payload.name,
+            name: action.payload.task?.name ? action.payload.task.name : "added",
             completed: false,
           },
         ],
         newTask: "",
-        nextId: state?.nextId ? state.nextId + 1 : 1,
+        nextId: state.nextId + 1,
       };
     }
     case "changed": {
       return {
+        ...state,
         tasks: state.tasks.map((t) => {
-          if (t.id === action.payload.id) {
-            return action.payload;
+          if (t.id === action.payload.task?.id) {
+            return action.payload.task;
           } else {
             return t;
           }
         }),
-        nextId: state.nextId,
         newTask: "",
       };
     }
-    case 'completed': {
+    case "completed": {
       return {
+        ...state,
         tasks: state.tasks.map((t) => {
-          if (t.id === action.payload.id) {
-            return {...t, completed: action.payload.completed };
+          if (t.id === action.payload.task?.id) {
+            return { ...t, completed: !t.completed };
           } else {
             return t;
           }
         }),
-        nextId: state.nextId,
       };
     }
     case "deleted": {
       return {
-        tasks: state.tasks.filter((t) => t.id !== action.payload.id),
+        tasks: state.tasks.filter((t) => t.id !== action.payload.task?.id),
         nextId: state.nextId,
       };
+    }
+    case "insert": {
+      return { ...state, newTask: action.payload.task?.name };
     }
     default: {
       throw Error("Unknown action: " + action.type);

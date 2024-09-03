@@ -13,6 +13,8 @@ function TaskCard({
   onCheckTask: ChangeEventHandler<HTMLInputElement>;
   onDeleteTask: MouseEventHandler<HTMLButtonElement>;
 }) {
+
+  console.log(task.completed)
   return (
     <li className="grid grid-cols-4 gap-4 justify-baseline">
       <input

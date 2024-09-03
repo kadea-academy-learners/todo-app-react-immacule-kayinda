@@ -11,8 +11,8 @@ export interface State {
 }
 
 export type ReducerAction = {
-  type: "added" | "changed" | "deleted" | "completed";
-  payload: Task;
+  type: "added" | "changed" | "deleted" | "completed" | "insert";
+  payload: { task?: Task; taskName?: string };
 };
 
 export interface Action {
