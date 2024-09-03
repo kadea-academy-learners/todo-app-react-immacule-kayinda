@@ -4,10 +4,11 @@ import { ChangeEventHandler, MouseEventHandler } from "react";
 
 function TaskList({
   tasks,
-  onChangeTask,
   onDeleteTask,
+  onCheckTask,
 }: {
   tasks: Task[];
+  onCheckTask: ChangeEventHandler<HTMLInputElement>;
   onChangeTask: ChangeEventHandler<HTMLInputElement>;
   onDeleteTask: MouseEventHandler<HTMLButtonElement>;
 }) {
@@ -16,7 +17,7 @@ function TaskList({
       {tasks.map((task: Task) => (
         <TaskCard
           dataId={task.id}
-          onChangeTask={onChangeTask}
+          onCheckTask={onCheckTask}
           onDeleteTask={onDeleteTask}
           key={task.id}
           task={task}

@@ -13,6 +13,7 @@ function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
   //const [tasks, setTasks] = useState<Task[]>([]);
   const [newTask, setNewTask] = useState<string>("");
+  const [isChecked, setIsChecked] = useState<boolean>(false);
 
   const handleSubmitTask = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -25,6 +26,19 @@ function App() {
       },
     });
     setNewTask("");
+  };
+
+  const onCheckTask: ChangeEventHandler = (event) => {
+    const id = parseInt(event.currentTarget.getAttribute("data-id") || "", 10);
+    dispatch({
+      type: "completed",
+      payload: {
+        id,
+        name: "",
+        completed: isChecked,
+      },
+    });
+    setIsChecked(!isChecked);
   };
 
   const handleChangeTask: ChangeEventHandler<HTMLInputElement> = (event) => {
@@ -67,6 +81,7 @@ function App() {
       <div>
         <TaskList
           tasks={state.tasks}
+          onCheckTask={onCheckTask}
           onChangeTask={handleChangeTask}
           onDeleteTask={handleDeleteTask}
         />
