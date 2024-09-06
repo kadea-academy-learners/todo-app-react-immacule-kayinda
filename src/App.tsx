@@ -14,7 +14,6 @@ function App() {
   const [isChecked, setIsChecked] = useState<boolean>(false);
 
   const handleSubmitTask = (event: React.FormEvent<HTMLFormElement>) => {
-    console.log("submitTask");
     event.preventDefault();
     if (state.newTask?.trim() === "") return;
     dispatch({
@@ -24,7 +23,6 @@ function App() {
   };
 
   const handleInsertText = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.value);
     dispatch({
       type: "insert",
       payload: {

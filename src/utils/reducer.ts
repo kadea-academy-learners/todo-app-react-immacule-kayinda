@@ -6,7 +6,6 @@ function reducer(state: State, action: ReducerAction): State {
       ...state
     }
   }
-  console.log(action.payload.task?.name)
   switch (action.type) {
     case "added": {
       return {
@@ -54,7 +53,7 @@ function reducer(state: State, action: ReducerAction): State {
       };
     }
     case "insert": {
-      return { ...state, newTask: action.payload.task?.name };
+      return { ...state, newTask: action.payload.taskName };
     }
     default: {
       throw Error("Unknown action: " + action.type);

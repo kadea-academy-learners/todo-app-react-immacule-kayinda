@@ -13,8 +13,7 @@ function TaskCard({
   onCheckTask: ChangeEventHandler<HTMLInputElement>;
   onDeleteTask: MouseEventHandler<HTMLButtonElement>;
 }) {
-
-  console.log(task.completed)
+  const completedStyle = task.completed ? 'text-green-500 underline' : ''
   return (
     <li className="grid grid-cols-4 gap-4 justify-baseline">
       <input
@@ -23,7 +22,7 @@ function TaskCard({
         type="checkbox"
         checked={task.completed}
       />
-      <span className="text-2xl underline">{task.name}</span>
+      <span className={`text-xl ${completedStyle}`}>{task.name}</span>
       <button data-id={`${dataId}`} onClick={onDeleteTask}>
         Supprimer
       </button>
